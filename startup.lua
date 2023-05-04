@@ -84,3 +84,41 @@ function newmsg(msg, colour)
 	newmsg.TextColor3 = colour
 	newmsg.Text = '-> ' .. msg
 end
+function jsondecode(json)
+	game:GetService('HttpService'):JSONDecode(json)
+end
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local oldmt = mt.__namecall
+mt.__namecall = newcclosure(function(self, ...)
+		local Args = {...}
+		local Method = getnamecallmethod()
+		if method == 'Kick' then
+			print('Not Today!')
+			task.wait(9e9)
+			return nil
+		end
+end)
+setreadonly(mt, true)
+newmsg('Antikick Enabled')
+if jsondecode(readfile('doggoshub-config.json')).CheckAnticheatModerators == false then
+	newmsg('Checking for any Anticheats/ Moderators; Disable in config')
+	local newgui = Instance.new('ScreenGui', game.CoreGui)
+	local newframe = Instance.new('Frame', newgui)
+	newframe.Size = UDim2.new(1000, 0, 1000, 0) -- // extremely big frame for no render issues while getting game descendants
+	newframe.BackGroundColor3 = Color3.new(0, 0, 0)
+	newframe.BorderColor3 = Color3.new(0, 0, 0)
+	for _, v in pairs(game:GetDescendants()) do --// haven't figured out a way to detect moderators yet
+		if v.Name:lower():find('anticheat') then
+			newmsg('Anticheat found, proceed with caution. Deleting for possible protection.', Color3.fromRGB(200, 0, 0))
+			v:Destroy()
+		end
+		--// took this down because i don't really know if this works
+-- 		for _, currentscript in pairs(getscripts()) do
+-- 			local contents = decompile(currentscript)
+-- 			if contents:lower():find('player:kick') then
+-- 				currentscript:Destroy() --// could be an important script but chances are very low
+-- 			end
+-- 		end
+	end
+end
