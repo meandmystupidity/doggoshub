@@ -101,7 +101,7 @@ mt.__namecall = newcclosure(function(self, ...)
 end)
 setreadonly(mt, true)
 newmsg('Antikick Enabled')
-if jsondecode(readfile('doggoshub-config.json')).CheckAnticheatModerators == false then
+if jsondecode(readfile('doggoshub-config.json')).CheckAnticheatModerators == true then
 	newmsg('Checking for any Anticheats/ Moderators; Disable in config')
 	local newgui = Instance.new('ScreenGui', game.CoreGui)
 	local newframe = Instance.new('Frame', newgui)
@@ -121,4 +121,22 @@ if jsondecode(readfile('doggoshub-config.json')).CheckAnticheatModerators == fal
 -- 			end
 -- 		end
 	end
+else
+	newmsg('Check Anticheat/ Moderators is disabled, enabling it is recommended.', Color3.fromRGB(200, 0, 0))
 end
+newmsg('Checking registration...')
+local kk = jsondecode(game:HttpGet('https://raw.githubusercontent.com/meandmystupidity/doggoshub/main/database.json')).registratedusers
+for _, account in pairs(kk) do
+	if tostring(account):sub(1, tostring(game.Players.LocalPlayer.UserId):len()) == tostring(game.Players.LocalPlayer.UserId) then
+		kk = tostring(account):sub(tostring(game.Players.LocalPlayer.UserId) +1, tostring(account):len())
+		newmsg('You are now logged in as: ' .. kk)
+		break
+	end
+end
+if not kk then
+	--// not important for now
+end
+newmsg('Everything should be done now!')
+Holder:TweenPosition(UDim2.new(1, 0, 0.365, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 2)
+Test:Destroy()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/meandmystupidity/doggoshub/main/hub/default.lua'))()
