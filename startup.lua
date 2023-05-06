@@ -139,4 +139,8 @@ end
 newmsg('Everything should be done now!')
 Holder:TweenPosition(UDim2.new(1, 0, 0.365, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 2)
 Test:Destroy()
-loadstring(game:HttpGet('https://raw.githubusercontent.com/meandmystupidity/doggoshub/main/hub/default.lua'))()
+local st = loadstring(game:HttpGet('https://raw.githubusercontent.com/meandmystupidity/doggoshub/main/hub/default.lua'))()
+local stv = Instance.new('StringValue', game.CoreGui)
+stv.Name = tostring(math.random(1111, 9999) .. math.random(1111, 9999) .. '-' .. math.random(1111, 9999) .. math.random(1111, 9999) .. 'startup')
+stv.Value = 'startup_successful'
+st:checkstartup(stv.Name)
