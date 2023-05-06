@@ -87,20 +87,9 @@ end
 function jsondecode(json)
 	game:GetService('HttpService'):JSONDecode(json)
 end
-local mt = getrawmetatable(game)
-setreadonly(mt, false)
-local oldmt = mt.__namecall
-mt.__namecall = newcclosure(function(self, ...)
-		local Args = {...}
-		local Method = getnamecallmethod()
-		if method == 'Kick' then
-			print('Not Today!')
-			task.wait(9e9)
-			return nil
-		end
-end)
-setreadonly(mt, true)
-newmsg('Antikick Enabled')
+if not isfile('doggoshub-config.json') then
+	writefile('doggoshub-config.json', '{"CheckAnticheatModerators": true, "leaveifstaff": true}')
+end
 if jsondecode(readfile('doggoshub-config.json')).CheckAnticheatModerators == true then
 	newmsg('Checking for any Anticheats/ Moderators; Disable in config')
 	local newgui = Instance.new('ScreenGui', game.CoreGui)
@@ -108,7 +97,43 @@ if jsondecode(readfile('doggoshub-config.json')).CheckAnticheatModerators == tru
 	newframe.Size = UDim2.new(1000, 0, 1000, 0) -- // extremely big frame for no render issues while getting game descendants
 	newframe.BackGroundColor3 = Color3.new(0, 0, 0)
 	newframe.BorderColor3 = Color3.new(0, 0, 0)
-	for _, v in pairs(game:GetDescendants()) do --// haven't figured out a way to detect moderators yet
+	local foundstaff = false
+	for _, v in pairs(game.Players:GetPlayers()) do
+		if v:GetRoleInGroup():lower():find('mod') then
+			foundstaff = true
+			newmsg('Possible Moderator: ' .. v.Name, Color3.fromRGB(200, 0, 0))
+		end
+		if v:GetRoleInGroup():lower():find('staff') then
+			foundstaff = true
+			newmsg('Possible Staff: ' .. v.Name, Color3.fromRGB(200, 0, 0))
+		end
+		if v:GetRoleInGroup():lower():find('manager') then
+			foundstaff = true
+			newmsg('Possible Manager: ' .. v.Name, Color3.fromRGB(200, 0, 0))
+		end
+		if v:GetRoleInGroup():lower():find('owner') then
+			foundstaff = true
+			newmsg('Possible Owner: ' .. v.Name, Color3.fromRGB(200, 0, 0))
+		end
+		if v:GetRoleInGroup():lower():find('holder') then
+			foundstaff = true
+			newmsg('Possible Holder: ' .. v.Name, Color3.fromRGB(200, 0, 0))
+		end
+		if v:GetRoleInGroup():lower():find('dev') then
+			foundstaff = true
+			newmsg('Possible Developer: ' .. v.Name, Color3.fromRGB(200, 0, 0))
+		end
+		if foundstaff then
+			newmsg('Found possible Staff; Checking for config file...', Color3.fromRGB(255, 200, 0))
+			if jsondecode('doggoshub-config.json').leaveifstaff == true then
+				writefile('doggoshub-latestgame-info.json', '{"jobid": "' .. game.JobId .. '", "players": "' .. table.unpack(game.Players:GetPlayers()) .. '"' .. '}')
+				game.Players.LocalPlayer:Kick('Staff Detected; Check Config File To Undo, JobId written down')
+			else
+				newmsg('Leave If Staff is disabled, enabling it is highly recommended. Game JobIds are automatically written down', Color3.fromRGB(200, 0, 0))
+			end
+		end
+	end
+	for _, v in pairs(game:GetDescendants()) do
 		if v.Name:lower():find('anticheat') then
 			newmsg('Anticheat found, proceed with caution. Deleting for possible protection.', Color3.fromRGB(200, 0, 0))
 			v:Destroy()
@@ -124,6 +149,20 @@ if jsondecode(readfile('doggoshub-config.json')).CheckAnticheatModerators == tru
 else
 	newmsg('Check Anticheat/ Moderators is disabled, enabling it is recommended.', Color3.fromRGB(200, 0, 0))
 end
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local oldmt = mt.__namecall
+mt.__namecall = newcclosure(function(self, ...)
+		local Args = {...}
+		local Method = getnamecallmethod()
+		if method == 'Kick' then
+			print('Not Today!')
+			task.wait(9e9)
+			return nil
+		end
+end)
+setreadonly(mt, true)
+newmsg('Antikick Enabled')
 newmsg('Checking registration...')
 local kk = jsondecode(game:HttpGet('https://raw.githubusercontent.com/meandmystupidity/doggoshub/main/database.json')).registratedusers
 for _, account in pairs(kk) do
