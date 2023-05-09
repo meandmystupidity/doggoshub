@@ -14,4 +14,4 @@ ________________________________________________________________________________
 
 Doggos Hub is a Roblox Exploit for many games to come.
 The GUI is advanced and nicely made.
-It will be free to use for everyone who has [Synapse X](x.synapse.to).
+It will be free to use for everyone who has Synapse X. (https://x.synapse.to)
